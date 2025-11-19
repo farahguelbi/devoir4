@@ -1,0 +1,19 @@
+
+
+spring:
+  application:
+    name: "configserver"
+
+  profiles:
+    active: git   # ou native si tu veux local
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/farahguelbi/config-repo.git
+          default-label: main
+          clone-on-start: true
+
+server:
+  port: 9999
