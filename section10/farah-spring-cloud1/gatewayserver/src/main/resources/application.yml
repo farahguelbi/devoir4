@@ -1,0 +1,53 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gatewayserver
+  cloud:
+    config:
+      enabled: false   # D�sactive le Config Server
+    discovery:
+      enabled: true
+    gateway:
+      routes:
+        - id: genre_route
+          uri: lb://genre-ms
+          predicates:
+            - Path=/genre-ms/**
+          filters:
+            - StripPrefix=1
+
+        - id: patient_route
+          uri: lb://patient-ms
+          predicates:
+            - Path=/patient-ms/**
+          filters:
+            - StripPrefix=1
+
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+
+  config:
+    import-check:
+      enabled: false   # Ignore l'absence de config server
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    gateway:
+      access: unrestricted
+eureka:
+  client:
+    register-with-eureka: true
+    fetchRegistry: true
+    serviceUrl:
+       defaultZone: ${DISCOVERY_SERVICE_URL:http://localhost:8761/eureka}
+       instance:
+          prefer-ip-address: true
